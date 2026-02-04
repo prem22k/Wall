@@ -1,4 +1,5 @@
 import NoteCard from './NoteCard';
+import VirtualWall from './VirtualWall';
 import './WallCanvas.css';
 
 /**
@@ -7,6 +8,8 @@ import './WallCanvas.css';
  * This is not a list, not a grid, not a feed.
  * It's a masonry collage of paper artifacts,
  * hand-placed and slightly imperfect.
+ * 
+ * Uses VirtualWall for performance with large note collections.
  */
 function WallCanvas({ notes, isLoading }) {
   const isEmpty = !notes || notes.length === 0;
@@ -33,15 +36,19 @@ function WallCanvas({ notes, isLoading }) {
             </span>
           </div>
           
-          {/* The wall itself - masonry layout */}
-          <div className="wall-canvas__grid">
-            {notes.map((note) => (
-              <NoteCard 
-                key={note.id} 
-                note={note}
-              />
-            ))}
-          </div>
+          {/* The wall itself - virtualized masonry layout for performance */}
+          {notes.length > 50 ? (
+            <VirtualWall notes={notes} />
+          ) : (
+            <div className="wall-canvas__grid">
+              {notes.map((note) => (
+                <NoteCard 
+                  key={note.id} 
+                  note={note}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
     </section>

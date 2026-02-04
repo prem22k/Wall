@@ -90,3 +90,39 @@ export async function deleteNote(noteId) {
     return true;
   }
 }
+
+/**
+ * Update a note on the server
+ */
+export async function updateNote(noteId, noteData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/notes/${noteId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(noteData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update note');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.warn('API unavailable:', error.message);
+    // Fallback: update in localStorage
+    const saved = localStorage.getItem('wall-notes');
+    if (saved) {
+      const notes = JSON.parse(saved);
+      const index = notes.findIndex(n => n.id === noteId);
+      if (index !== -1) {
+        notes[index] = { ...notes[index], ...noteData };
+        localStorage.setItem('wall-notes', JSON.stringify(notes));
+        return notes[index];
+      }
+    }
+    throw error;
+  }
+}
+

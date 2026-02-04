@@ -62,4 +62,39 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+/**
+ * PUT /api/notes/:id
+ * Update a note on the wall
+ */
+router.put('/:id', async (req, res) => {
+  try {
+    const { message, name } = req.body;
+    
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+    
+    const note = await Note.findByIdAndUpdate(
+      req.params.id,
+      {
+        message: message.trim(),
+        name: name?.trim() || 'Anonymous',
+      },
+      { new: true, runValidators: true }
+    );
+    
+    if (!note) {
+      return res.status(404).json({ error: 'Note not found' });
+    }
+    
+    res.json(note);
+  } catch (error) {
+    console.error('Error updating note:', error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
+    }
+    res.status(500).json({ error: 'Failed to update note' });
+  }
+});
+
 export default router;

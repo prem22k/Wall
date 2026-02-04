@@ -1,0 +1,208 @@
+/**
+ * FontSwitcher Styles
+ * 
+ * A floating control for typography selection
+ */
+
+.font-switcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+}
+
+.font-switcher__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(139, 115, 85, 0.2);
+  border-radius: 24px;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-casual);
+  color: var(--color-text);
+}
+
+.font-switcher__toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(139, 115, 85, 0.3);
+}
+
+.font-switcher__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.font-switcher__label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.font-switcher__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  animation: fadeIn 0.2s ease;
+}
+
+.font-switcher__panel {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  width: 400px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 140px);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    0 16px 48px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1001;
+}
+
+.font-switcher__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.15);
+  background: rgba(255, 249, 228, 0.3);
+}
+
+.font-switcher__title {
+  font-family: var(--font-handwritten);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.font-switcher__close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.font-switcher__close:hover {
+  background: rgba(139, 115, 85, 0.1);
+  color: var(--color-text);
+}
+
+.font-switcher__content {
+  overflow-y: auto;
+  max-height: calc(100vh - 240px);
+  padding: 16px 24px 24px;
+}
+
+.font-switcher__category {
+  margin-bottom: 24px;
+}
+
+.font-switcher__category:last-child {
+  margin-bottom: 0;
+}
+
+.font-switcher__category-title {
+  font-family: var(--font-casual);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin: 0 0 12px 0;
+  opacity: 0.7;
+}
+
+.font-switcher__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.font-switcher__option {
+  padding: 12px 16px;
+  background: rgba(255, 249, 228, 0.2);
+  border: 2px solid rgba(139, 115, 85, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  color: var(--color-text);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.font-switcher__option:hover {
+  background: rgba(255, 249, 228, 0.5);
+  border-color: rgba(139, 115, 85, 0.3);
+  transform: translateY(-1px);
+}
+
+.font-switcher__option--active {
+  background: rgba(255, 237, 179, 0.6);
+  border-color: rgba(139, 115, 85, 0.5);
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .font-switcher {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .font-switcher__panel {
+    bottom: 68px;
+    right: 16px;
+    width: calc(100vw - 32px);
+  }
+
+  .font-switcher__options {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}

@@ -32,9 +32,15 @@
   opacity: 0;
   transform-origin: center top;
   transition: 
-    opacity 0.4s ease-out,
-    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.5s ease-out,
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 0.3s ease;
+  
+  /* Initial state for entry animation */
+  transform: 
+    rotate(var(--note-rotation, 0deg))
+    translateY(calc(var(--note-offset-y, 0px) + 20px))
+    scale(0.95);
   
   /* Subtle paper texture via pseudo-element */
   position: relative;
@@ -57,21 +63,34 @@
   opacity: 1;
   transform: 
     rotate(var(--note-rotation, 0deg))
-    translateY(var(--note-offset-y, 0px));
+    translateY(var(--note-offset-y, 0px))
+    scale(1);
 }
 
 /* Hover - gentle lift like picking up paper */
 .note-card:hover {
   transform: 
     rotate(calc(var(--note-rotation, 0deg) * 0.5))
-    translateY(calc(var(--note-offset-y, 0px) - 4px))
-    scale(1.01);
+    translateY(calc(var(--note-offset-y, 0px) - 6px))
+    scale(1.02);
   box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.05),
-    0 4px 8px rgba(0, 0, 0, 0.06),
-    0 8px 16px rgba(0, 0, 0, 0.08),
-    0 16px 32px rgba(0, 0, 0, 0.06);
+    0 3px 6px rgba(0, 0, 0, 0.06),
+    0 6px 12px rgba(0, 0, 0, 0.08),
+    0 12px 24px rgba(0, 0, 0, 0.1),
+    0 24px 48px rgba(0, 0, 0, 0.08);
   z-index: 10;
+}
+
+/* Active state - pressing down */
+.note-card:active {
+  transform: 
+    rotate(var(--note-rotation, 0deg))
+    translateY(var(--note-offset-y, 0px))
+    scale(0.98);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 4px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* Tape decoration - subtle, not every note */
@@ -90,6 +109,61 @@
   border-radius: 1px;
   opacity: 0.6;
   pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Pin decoration - appears on some notes */
+.note-card__pin {
+  position: absolute;
+  top: -6px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #e8d5c4, #c9a88a);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.note-card__pin::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Corner fold - like a dog-eared page */
+.note-card__fold {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 20px 20px 0;
+  border-color: transparent rgba(0, 0, 0, 0.05) transparent transparent;
+  pointer-events: none;
+}
+
+/* Paperclip decoration */
+.note-card__clip {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  width: 24px;
+  height: 36px;
+  border: 2px solid rgba(180, 180, 180, 0.4);
+  border-radius: 8px 8px 0 0;
+  pointer-events: none;
+  transform: rotate(-10deg);
 }
 
 /* Message text - handwritten feel */

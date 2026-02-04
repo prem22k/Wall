@@ -1,0 +1,72 @@
+/**
+ * VirtualWall Styles
+ * 
+ * Performance-optimized masonry layout
+ */
+
+.virtual-wall {
+  width: 100%;
+  min-height: 300px;
+}
+
+.virtual-wall__grid {
+  column-count: 3;
+  column-gap: 24px;
+}
+
+.virtual-wall__item {
+  break-inside: avoid;
+  margin-bottom: 24px;
+  display: inline-block;
+  width: 100%;
+}
+
+.virtual-wall__placeholder {
+  width: 280px;
+  background: rgba(255, 249, 228, 0.2);
+  border-radius: 3px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.virtual-wall__loader {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.virtual-wall__loader-text {
+  font-family: 'Kalam', cursive;
+  font-size: 1rem;
+  color: #8b7355;
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 900px) {
+  .virtual-wall__grid {
+    column-count: 2;
+    column-gap: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .virtual-wall__grid {
+    column-count: 1;
+    column-gap: 0;
+  }
+  
+  .virtual-wall__item {
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+  }
+}

@@ -92,18 +92,57 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* Footer - barely there */
+/* Footer - warm guide section */
 .app__footer {
   margin-top: 80px;
-  padding-top: 40px;
-  text-align: center;
+  padding-top: 60px;
+  border-top: 1px solid rgba(139, 115, 85, 0.15);
 }
 
-.app__footer p {
+.app__guide {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  padding: 32px 24px;
+  background: rgba(255, 249, 228, 0.3);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.app__guide-title {
+  font-family: var(--font-handwritten);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #5a5046;
+  margin: 0 0 16px 0;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.app__guide-text {
   font-family: var(--font-casual);
-  font-size: 0.9rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  margin: 0 0 12px 0;
+  opacity: 0.85;
+}
+
+.app__guide-text:last-of-type {
+  margin-bottom: 0;
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.app__footer-credit {
+  text-align: center;
+  padding: 20px;
+}
+
+.app__footer-credit p {
+  font-family: var(--font-casual);
+  font-size: 0.85rem;
   color: var(--color-text-quiet);
-  opacity: 0.6;
+  opacity: 0.5;
   margin: 0;
 }
 

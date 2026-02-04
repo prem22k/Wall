@@ -53,9 +53,18 @@ function NoteCard({ note }) {
       }}
       aria-label={`Note from ${note.name || 'Anonymous'}`}
     >
-      {/* Subtle tape decoration - only on some notes */}
+      {/* Decorative elements - distributed randomly based on note properties */}
       {style.rotation > 0.5 && (
         <div className="note-card__tape" aria-hidden="true" />
+      )}
+      {style.rotation < -0.5 && (
+        <div className="note-card__pin" aria-hidden="true" />
+      )}
+      {style.offsetY > 4 && (
+        <div className="note-card__fold" aria-hidden="true" />
+      )}
+      {style.offsetY < -4 && style.rotation > 0 && (
+        <div className="note-card__clip" aria-hidden="true" />
       )}
       
       <p className="note-card__message">{note.message}</p>
