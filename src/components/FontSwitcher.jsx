@@ -9,7 +9,7 @@ import './FontSwitcher.css';
  */
 
 // Font collections organized by style
-export const fontOptions = [
+const fontOptions = [
   // Handwritten & Casual
   { name: 'Caveat', family: 'Caveat, cursive', category: 'Handwritten' },
   { name: 'Patrick Hand', family: 'Patrick Hand, cursive', category: 'Handwritten' },
