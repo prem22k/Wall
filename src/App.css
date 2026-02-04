@@ -1,0 +1,9 @@
+/**
+ * App.css - Additional app-level styles
+ * Most styles are in index.css for global scope
+ * and in component CSS files for specificity.
+ */
+
+#root {
+  width: 100%;
+}

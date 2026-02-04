@@ -1,0 +1,147 @@
+/**
+ * NoteCard Styles
+ * 
+ * Visual intent: Each note is a paper artifact.
+ * It has weight, texture, and imperfection.
+ * No borders, no boxes, just paper on a surface.
+ */
+
+.note-card {
+  /* Sizing - fixed width, natural height */
+  width: 280px;
+  min-height: 120px;
+  padding: 24px 20px 18px;
+  
+  /* Paper appearance */
+  background: var(--note-color, #FFF9C4);
+  border-radius: 2px 3px 4px 2px; /* Imperfect corners */
+  
+  /* Physical presence - layered shadows for depth */
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    0 8px 16px rgba(0, 0, 0, 0.04);
+  
+  /* Hand-placed positioning */
+  transform: 
+    rotate(var(--note-rotation, 0deg))
+    translateY(var(--note-offset-y, 0px));
+  
+  /* Entry animation setup */
+  opacity: 0;
+  transform-origin: center top;
+  transition: 
+    opacity 0.4s ease-out,
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+  
+  /* Subtle paper texture via pseudo-element */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Paper grain texture overlay */
+.note-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* Visible state - note has landed */
+.note-card--visible {
+  opacity: 1;
+  transform: 
+    rotate(var(--note-rotation, 0deg))
+    translateY(var(--note-offset-y, 0px));
+}
+
+/* Hover - gentle lift like picking up paper */
+.note-card:hover {
+  transform: 
+    rotate(calc(var(--note-rotation, 0deg) * 0.5))
+    translateY(calc(var(--note-offset-y, 0px) - 4px))
+    scale(1.01);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+}
+
+/* Tape decoration - subtle, not every note */
+.note-card__tape {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 48px;
+  height: 16px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.4)
+  );
+  border-radius: 1px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Message text - handwritten feel */
+.note-card__message {
+  font-family: 'Caveat', 'Patrick Hand', cursive;
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #3d3d3d;
+  margin: 0 0 16px 0;
+  word-wrap: break-word;
+  hyphens: auto;
+  
+  /* Slight character spacing for handwritten look */
+  letter-spacing: 0.01em;
+}
+
+/* Footer - subtle, secondary */
+.note-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: auto;
+}
+
+/* Author name - calm, not bold */
+.note-card__author {
+  font-family: 'Kalam', 'Patrick Hand', cursive;
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: #666;
+  opacity: 0.8;
+}
+
+/* Timestamp - very quiet */
+.note-card__time {
+  font-family: 'Kalam', cursive;
+  font-size: 0.75rem;
+  color: #999;
+  opacity: 0.6;
+  margin-left: auto;
+}
+
+/* Responsive - slightly smaller on mobile */
+@media (max-width: 640px) {
+  .note-card {
+    width: 260px;
+    padding: 20px 16px 14px;
+  }
+  
+  .note-card__message {
+    font-size: 1.25rem;
+  }
+}

@@ -1,0 +1,138 @@
+/**
+ * Global Styles - The Wall
+ * 
+ * Visual foundation: warm, tactile, quiet.
+ * This is paper, cork, fabric — not a screen.
+ */
+
+/* Reset and base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Color palette - warm neutrals, no pure white/black */
+  --color-bg: #f5f0e8;
+  --color-bg-warm: #ede7db;
+  --color-text: #4a4540;
+  --color-text-muted: #8b8276;
+  --color-text-quiet: #a9a196;
+  
+  /* Typography */
+  --font-handwritten: 'Caveat', 'Patrick Hand', cursive;
+  --font-casual: 'Kalam', cursive;
+  --font-body: 'Kalam', -apple-system, sans-serif;
+  
+  /* Spacing */
+  --page-padding: 24px;
+  --max-width: 900px;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  
+  /* Warm paper/cork background */
+  background: var(--color-bg);
+  background-image: 
+    /* Subtle grain texture */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+    /* Warm gradient undertone */
+    linear-gradient(180deg, #f5f0e8 0%, #ede4d4 100%);
+  background-blend-mode: overlay, normal;
+  
+  /* Typography defaults */
+  font-family: var(--font-body);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* Main app container */
+.app {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 48px var(--page-padding) 80px;
+  min-height: 100vh;
+}
+
+/* Header - quiet presence */
+.app__header {
+  text-align: center;
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+}
+
+.app__title {
+  font-family: var(--font-handwritten);
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: #5a5046;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+  
+  /* Slight organic tilt */
+  transform: rotate(-0.5deg);
+}
+
+.app__subtitle {
+  font-family: var(--font-casual);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  opacity: 0.7;
+  letter-spacing: 0.02em;
+}
+
+/* Footer - barely there */
+.app__footer {
+  margin-top: 80px;
+  padding-top: 40px;
+  text-align: center;
+}
+
+.app__footer p {
+  font-family: var(--font-casual);
+  font-size: 0.9rem;
+  color: var(--color-text-quiet);
+  opacity: 0.6;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  :root {
+    --page-padding: 16px;
+  }
+  
+  .app {
+    padding-top: 32px;
+  }
+  
+  .app__title {
+    font-size: 2.2rem;
+  }
+  
+  .app__header {
+    margin-bottom: 32px;
+  }
+}
+
+/* Accessibility - respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

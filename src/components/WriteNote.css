@@ -1,0 +1,226 @@
+/**
+ * WriteNote Styles
+ * 
+ * Visual intent: This IS a note, not a form.
+ * The experience should feel like picking up a pen,
+ * not clicking through a UI.
+ */
+
+.write-note {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto 48px;
+  position: relative;
+}
+
+/* The paper itself */
+.write-note__paper {
+  background: var(--write-note-color, #FFF9C4);
+  border-radius: 2px 4px 3px 2px;
+  padding: 24px 22px 20px;
+  
+  /* Gentle shadow - note is resting on the surface */
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 3px 6px rgba(0, 0, 0, 0.05),
+    0 6px 12px rgba(0, 0, 0, 0.04);
+  
+  /* Slight rotation for hand-placed feel */
+  transform: rotate(-0.5deg);
+  transform-origin: center top;
+  
+  transition: 
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+  
+  /* Paper texture */
+  position: relative;
+}
+
+.write-note__paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Focused state - slight lift, ready to write */
+.write-note--focused .write-note__paper {
+  transform: rotate(-0.3deg) translateY(-2px);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* Submitting - note is being placed */
+.write-note--submitting .write-note__paper {
+  transform: rotate(0deg) scale(0.98);
+  opacity: 0.8;
+}
+
+/* Message textarea - no box, just writing space */
+.write-note__message {
+  width: 100%;
+  min-height: 80px;
+  padding: 0;
+  margin: 0 0 16px 0;
+  
+  /* Invisible input */
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  
+  /* Handwritten typography */
+  font-family: 'Caveat', 'Patrick Hand', cursive;
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #3d3d3d;
+  
+  /* Placeholder styling */
+  &::placeholder {
+    color: #999;
+    opacity: 0.5;
+    font-style: italic;
+  }
+}
+
+/* Footer row */
+.write-note__footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Em dash before name */
+.write-note__dash {
+  font-family: 'Kalam', cursive;
+  color: #888;
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+/* Name input - blends into paper */
+.write-note__name {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  
+  /* Invisible input */
+  background: transparent;
+  border: none;
+  outline: none;
+  
+  /* Typography to match notes */
+  font-family: 'Kalam', cursive;
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: #666;
+  
+  &::placeholder {
+    color: #999;
+    opacity: 0.5;
+  }
+}
+
+/* Submit button - subtle, not a CTA */
+.write-note__submit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  
+  /* Minimal appearance */
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
+  border-radius: 16px;
+  
+  /* Typography */
+  font-family: 'Kalam', cursive;
+  font-size: 0.85rem;
+  color: #666;
+  
+  cursor: pointer;
+  transition: 
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.write-note__submit:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.08);
+  color: #444;
+}
+
+.write-note__submit:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.write-note__submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.write-note__submit-icon {
+  width: 14px;
+  height: 14px;
+  transform: rotate(180deg);
+}
+
+.write-note__submit-text {
+  /* Hide on very small screens */
+}
+
+/* Keyboard hint */
+.write-note__hint {
+  position: absolute;
+  bottom: -28px;
+  right: 8px;
+  
+  font-family: 'Kalam', cursive;
+  font-size: 0.75rem;
+  color: #aaa;
+  opacity: 0.7;
+  
+  animation: hint-fade-in 0.3s ease;
+}
+
+@keyframes hint-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .write-note {
+    max-width: 300px;
+  }
+  
+  .write-note__paper {
+    padding: 20px 18px 16px;
+  }
+  
+  .write-note__message {
+    font-size: 1.25rem;
+  }
+  
+  .write-note__submit-text {
+    display: none;
+  }
+  
+  .write-note__submit {
+    padding: 8px;
+    border-radius: 50%;
+  }
+}
