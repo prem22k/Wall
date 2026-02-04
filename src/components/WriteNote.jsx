@@ -113,7 +113,6 @@ function WriteNote({ onSubmit }) {
               </option>
             ))}
           </select>
-          />
           
           <button 
             type="submit"
