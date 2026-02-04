@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import WriteNote from './components/WriteNote';
 import WallCanvas from './components/WallCanvas';
+import { fetchNotes, createNote } from './services/api';
 import './App.css';
 
 /**
@@ -12,37 +13,32 @@ import './App.css';
  * Everything here should feel physical, human, imperfect.
  */
 function App() {
-  const [notes, setNotes] = useState(() => {
-    // Load notes from localStorage
-    const saved = localStorage.getItem('wall-notes');
-    if (saved) {
+  const [notes, setNotes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load notes from API on mount
+  useEffect(() => {
+    async function loadNotes() {
       try {
-        return JSON.parse(saved);
-      } catch {
-        return [];
+        const loadedNotes = await fetchNotes();
+        setNotes(loadedNotes);
+      } catch (error) {
+        console.error('Failed to load notes:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
-    return [];
-  });
-
-  // Persist notes to localStorage
-  useEffect(() => {
-    localStorage.setItem('wall-notes', JSON.stringify(notes));
-  }, [notes]);
+    loadNotes();
+  }, []);
 
   const handleAddNote = async (noteData) => {
-    const newNote = {
-      id: `note-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
-      message: noteData.message,
-      name: noteData.name,
-      createdAt: new Date().toISOString(),
-    };
-
-    // Add to beginning so newest notes appear first
-    setNotes(prev => [newNote, ...prev]);
-
-    // Small delay to let the animation feel intentional
-    await new Promise(resolve => setTimeout(resolve, 100));
+    try {
+      const newNote = await createNote(noteData);
+      // Add to beginning so newest notes appear first
+      setNotes(prev => [newNote, ...prev]);
+    } catch (error) {
+      console.error('Failed to create note:', error);
+    }
   };
 
   return (
@@ -57,7 +53,7 @@ function App() {
       <WriteNote onSubmit={handleAddNote} />
 
       {/* The wall of notes */}
-      <WallCanvas notes={notes} />
+      <WallCanvas notes={notes} isLoading={isLoading} />
 
       {/* Footer - barely there */}
       <footer className="app__footer">

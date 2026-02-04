@@ -8,8 +8,16 @@ import './WallCanvas.css';
  * It's a masonry collage of paper artifacts,
  * hand-placed and slightly imperfect.
  */
-function WallCanvas({ notes }) {
+function WallCanvas({ notes, isLoading }) {
   const isEmpty = !notes || notes.length === 0;
+
+  if (isLoading) {
+    return (
+      <section className="wall-canvas" aria-label="Wall of notes">
+        <LoadingState />
+      </section>
+    );
+  }
 
   return (
     <section className="wall-canvas" aria-label="Wall of notes">
@@ -37,6 +45,22 @@ function WallCanvas({ notes }) {
         </>
       )}
     </section>
+  );
+}
+
+/**
+ * LoadingState - A gentle loading indicator
+ */
+function LoadingState() {
+  return (
+    <div className="wall-canvas__loading">
+      <div className="wall-canvas__loading-papers" aria-hidden="true">
+        <div className="wall-canvas__loading-paper" />
+        <div className="wall-canvas__loading-paper" />
+        <div className="wall-canvas__loading-paper" />
+      </div>
+      <p className="wall-canvas__loading-text">Gathering memories...</p>
+    </div>
   );
 }
 
