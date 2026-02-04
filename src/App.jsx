@@ -32,7 +32,7 @@ function App() {
 
   const handleAddNote = async (noteData) => {
     const newNote = {
-      id: `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `note-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       message: noteData.message,
       name: noteData.name,
       createdAt: new Date().toISOString(),
