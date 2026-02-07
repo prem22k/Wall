@@ -33,7 +33,8 @@ const corsOptions = {
       /^http:\/\/localhost:\d+$/,
       /^https:\/\/.*\.app\.github\.dev$/,
       /^https:\/\/.*\.githubpreview\.dev$/,
-      /^https:\/\/.*\.onrender\.com$/
+      /^https:\/\/.*\.onrender\.com$/,
+      /^https:\/\/.*\.vercel\.app$/
     ];
     
     const isAllowed = allowedPatterns.some(pattern => pattern.test(origin));
