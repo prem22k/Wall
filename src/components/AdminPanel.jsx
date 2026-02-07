@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { deleteNote, updateNote } from '../services/api';
+import { deleteNote, updateNote, authenticateAdmin } from '../services/api';
 import './AdminPanel.css';
 
 /**
@@ -12,19 +12,29 @@ function AdminPanel({ notes, onNoteDeleted, onNoteUpdated, isFullPage = false })
   const [isOpen, setIsOpen] = useState(isFullPage ? true : false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [authError, setAuthError] = useState('');
   const [editingNote, setEditingNote] = useState(null);
   const [editMessage, setEditMessage] = useState('');
   const [editName, setEditName] = useState('');
   
-  // Simple password check (in production, use proper auth)
-  const handleAuth = (e) => {
+  // Authenticate with backend
+  const handleAuth = async (e) => {
     e.preventDefault();
-    // Simple password for demo - in production use proper authentication
-    if (password === 'ashish123') {
-      setIsAuthenticated(true);
-      setPassword('');
-    } else {
-      alert('Incorrect password');
+    setIsAuthenticating(true);
+    setAuthError('');
+    
+    try {
+      const success = await authenticateAdmin(password);
+      if (success) {
+        setIsAuthenticated(true);
+        setPassword('');
+        setAuthError('');
+      }
+    } catch (error) {
+      setAuthError(error.message || 'Authentication failed');
+    } finally {
+      setIsAuthenticating(false);
     }
   };
 
@@ -101,16 +111,29 @@ function AdminPanel({ notes, onNoteDeleted, onNoteUpdated, isFullPage = false })
             
             {!isAuthenticated ? (
               <form className="admin-panel__auth" onSubmit={handleAuth}>
+                {authError && (
+                  <div className="admin-panel__auth-error">
+                    ⚠️ {authError}
+                  </div>
+                )}
                 <input
                   type="password"
                   className="admin-panel__password"
                   placeholder="Enter password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setAuthError('');
+                  }}
                   autoFocus
+                  disabled={isAuthenticating}
                 />
-                <button type="submit" className="admin-panel__auth-btn">
-                  Unlock
+                <button 
+                  type="submit" 
+                  className="admin-panel__auth-btn"
+                  disabled={isAuthenticating || !password}
+                >
+                  {isAuthenticating ? 'Checking...' : 'Unlock'}
                 </button>
               </form>
             ) : (

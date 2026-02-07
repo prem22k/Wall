@@ -45,13 +45,33 @@ npm install
    cp .env.example .env
    ```
 
-2. Update `.env` with your MongoDB connection string:
+2. Update `.env` with your MongoDB connection string and admin password:
    ```
    MONGODB_URI=mongodb://localhost:27017/wall
    PORT=3001
+   ADMIN_PASSWORD=your_secure_password_here
    ```
 
+   > **Security Note:** Change the `ADMIN_PASSWORD` to a strong password before deploying to production.
+
+3. Start MongoDB and seed the admin user:
+   ```bash
+   # Start MongoDB
+   npm run mongo:start
+   
+   # Create admin user in database
+   npm run seed:admin
+   ```
+
+   This will create an admin user with the password from your `.env` file.
+
 ### Running the App
+
+**Quick start (all-in-one):**
+```bash
+npm run dev:full
+```
+This starts MongoDB, backend, and frontend all at once.
 
 **Development (frontend + backend):**
 ```bash
@@ -87,7 +107,52 @@ npm start
 |--------|----------|-------------|
 | GET | `/api/notes` | Get all notes |
 | POST | `/api/notes` | Create a new note |
+| PUT | `/api/notes/:id` | Update a note |
 | DELETE | `/api/notes/:id` | Delete a note |
+| POST | `/api/admin/auth` | Admin authentication |
+
+## Admin Panel
+
+Access the admin panel at `/admin` to manage notes:
+- View all notes
+- Edit note content
+- Delete notes
+- Secure password authentication
+
+**Default credentials:**
+- Username: `admin` (stored in database)
+- Password: Set via `ADMIN_PASSWORD` in `.env`
+
+**Security features:**
+- Passwords are hashed with bcrypt in MongoDB
+- CORS protection for API endpoints
+- Rate limiting (100 requests per 15 minutes)
+- Secure authentication endpoint
+
+**To change admin password:**
+1. Update `ADMIN_PASSWORD` in `.env`
+2. Run `npm run seed:admin` to update the database
+
+## GitHub Codespaces
+
+The app automatically detects GitHub Codespaces and configures the correct API URLs. No manual configuration needed - just run:
+
+```bash
+npm run dev:full
+```
+
+The frontend will automatically connect to the backend via the forwarded ports.
+
+## Security Best Practices
+
+1. **Change the default password** - Update `ADMIN_PASSWORD` in `.env`
+2. **Use strong passwords** - At least 12 characters with mixed case, numbers, symbols
+3. **Enable HTTPS** - Use reverse proxy (nginx/caddy) in production
+4. **Environment variables** - Never commit `.env` files to git
+5. **Database security** - Use MongoDB authentication in production
+6. **Regular updates** - Keep dependencies up to date with `npm audit`
+
+## API Endpoints
 | GET | `/api/health` | Health check |
 
 ## License

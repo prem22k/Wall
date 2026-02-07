@@ -7,12 +7,17 @@
     "dev": "vite",
     "dev:server": "node server/index.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
+    "mongo:start": "docker start mongodb || docker run -d --name mongodb -p 27017:27017 -v mongodb_data:/data/db mongo:latest",
+    "mongo:stop": "docker stop mongodb",
+    "dev:full": "npm run mongo:start && npm run dev:all",
+    "seed:admin": "node server/seed-admin.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "node server/index.js"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",

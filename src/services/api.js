@@ -5,7 +5,28 @@
  * making it easy to switch between localStorage and MongoDB.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Auto-detect API URL for GitHub Codespaces
+function getApiBaseUrl() {
+  // Use environment variable if set
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // Auto-detect GitHub Codespaces
+  const currentUrl = window.location.href;
+  if (currentUrl.includes('.app.github.dev')) {
+    // Replace port 5173 with 3001 for backend
+    const backendUrl = currentUrl.replace('-5173.app.github.dev', '-3001.app.github.dev');
+    const url = new URL(backendUrl);
+    return `${url.protocol}//${url.host}/api`;
+  }
+  
+  // Default to localhost
+  return 'http://localhost:3001/api';
+}
+
+const API_BASE_URL = getApiBaseUrl();
+console.log('API Base URL:', API_BASE_URL);
 
 /**
  * Fetch all notes from the server
@@ -126,3 +147,33 @@ export async function updateNote(noteId, noteData) {
   }
 }
 
+/**
+ * Authenticate admin user
+ */
+export async function authenticateAdmin(password) {
+  try {
+    console.log('Authenticating with:', API_BASE_URL);
+    const response = await fetch(`${API_BASE_URL}/admin/auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password }),
+    });
+    
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Authentication failed');
+    }
+    
+    const data = await response.json();
+    return data.success;
+  } catch (error) {
+    console.error('Admin authentication error:', error);
+    // Provide user-friendly error messages
+    if (error.message.includes('Failed to fetch')) {
+      throw new Error('Cannot connect to server. Please check if the backend is running.');
+    }
+    throw error;
+  }
+}
