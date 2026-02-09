@@ -12,9 +12,10 @@ jobs:
     steps:
       - name: Ping backend health endpoint
         run: |
-          status=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 https://wall-qwuk.onrender.com/api/health || echo 000)
+          status=$(curl -sS -o output.txt -w "%{http_code}" --max-time 10 https://wall-qwuk.onrender.com/api/health || echo 000)
           echo "HTTP status: $status"
+          cat output.txt || true
           case "$status" in
             2*) echo "Health check OK";;
-            *) echo "Health check failed (status $status)" >&2; exit 1;;
+            *) echo "Health check failed (status $status)"; cat output.txt; exit 1;;
           esac
