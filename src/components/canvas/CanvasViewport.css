@@ -1,0 +1,104 @@
+/**
+ * Canvas Viewport Styles
+ * 
+ * Creates the infinite canvas effect with
+ * pan gestures and smooth transforms.
+ */
+
+/* Main viewport container - fills entire screen */
+.canvas-viewport {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  cursor: grab;
+  
+  /* Warm paper background */
+  background: var(--color-bg, #f5f0e8);
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #f5f0e8 0%, #ede4d4 100%);
+  background-blend-mode: overlay, normal;
+  
+  /* Prevent text selection during drag */
+  user-select: none;
+  touch-action: none;
+}
+
+.canvas-viewport:active {
+  cursor: grabbing;
+}
+
+/* The infinite world container */
+.infinite-world {
+  position: absolute;
+  width: 10000px;
+  height: 10000px;
+  /* Start centered so we can pan in all directions */
+  left: -5000px;
+  top: -5000px;
+  will-change: transform;
+}
+
+/* Directional marker - points to off-screen notes */
+.directional-marker {
+  position: fixed;
+  z-index: 1000;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  
+  background: rgba(122, 107, 90, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  
+  color: #fff;
+  cursor: pointer;
+  
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.1);
+  
+  transition: 
+    transform 0.15s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.directional-marker:hover {
+  background: rgba(90, 80, 70, 0.95);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.directional-marker:active {
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+/* Pulse animation for attention */
+.directional-marker::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(122, 107, 90, 0.3);
+  animation: marker-pulse 2s ease-in-out infinite;
+}
+
+@keyframes marker-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}

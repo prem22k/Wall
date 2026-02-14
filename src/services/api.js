@@ -78,6 +78,7 @@ export async function createNote(noteData) {
       id: `note-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       message: noteData.message,
       name: noteData.name || 'Anonymous',
+      font: noteData.font || 'Caveat',
       createdAt: new Date().toISOString(),
     };
     

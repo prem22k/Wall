@@ -17,11 +17,14 @@
     "start": "node server/index.js"
   },
   "dependencies": {
+    "@use-gesture/react": "^10.3.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.0",
+    "framer-motion": "^12.32.0",
+    "lucide-react": "^0.563.0",
     "mongoose": "^8.9.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

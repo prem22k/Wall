@@ -1,0 +1,215 @@
+/**
+ * NavigationRadar Styles
+ *
+ * Game HUD-style indicators for off-screen notes.
+ * Subtle, semi-transparent, opaque on hover.
+ *
+ * Enhanced with note preview tooltips and color matching.
+ */
+
+.navigation-radar {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+}
+
+/* Wrapper for marker + tooltip positioning */
+.radar-marker-wrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+}
+
+.radar-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin: 0;
+
+    /* Color from note - with fallback */
+    background: var(--marker-color, rgba(90, 80, 70, 0.7));
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+
+    color: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+    transition:
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.radar-marker:hover,
+.radar-marker--active {
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.25),
+        0 0 0 4px rgba(255, 255, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.radar-marker:active {
+    transform: scale(0.92);
+}
+
+/* Subtle pulse animation for visibility */
+.radar-marker::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--marker-color, rgba(90, 80, 70, 0.4));
+    opacity: 0;
+    animation: radar-ping 2.5s ease-in-out infinite;
+}
+
+@keyframes radar-ping {
+    0%,
+    100% {
+        opacity: 0;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(1.15);
+    }
+}
+
+/* Icon alignment */
+.radar-marker svg {
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+/* ============================================
+   TOOLTIP STYLES
+   ============================================ */
+
+.radar-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 12px);
+    transform: translateX(-50%);
+    z-index: 10;
+
+    min-width: 180px;
+    max-width: 280px;
+
+    pointer-events: none;
+}
+
+.radar-tooltip__content {
+    background: var(--tooltip-color, #FFF9C4);
+    border-radius: 4px;
+    padding: 12px 14px;
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.1);
+
+    /* Paper texture effect */
+    position: relative;
+    overflow: hidden;
+}
+
+.radar-tooltip__content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.radar-tooltip__message {
+    font-family: 'Caveat', 'Patrick Hand', cursive;
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #3d3d3d;
+    margin: 0 0 8px 0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.radar-tooltip__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    font-family: 'Kalam', cursive;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.radar-tooltip__author {
+    font-weight: 300;
+    opacity: 0.9;
+}
+
+.radar-tooltip__distance {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    padding: 2px 8px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+
+    font-size: 0.75rem;
+    color: #555;
+}
+
+.radar-tooltip__distance svg {
+    flex-shrink: 0;
+}
+
+/* Tooltip arrow pointing down */
+.radar-tooltip__arrow {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid var(--tooltip-color, #FFF9C4);
+
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .radar-marker {
+        width: 28px;
+        height: 28px;
+    }
+
+    .radar-tooltip {
+        max-width: 220px;
+    }
+
+    .radar-tooltip__content {
+        padding: 10px 12px;
+    }
+
+    .radar-tooltip__message {
+        font-size: 1rem;
+    }
+}

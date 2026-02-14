@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { CanvasProvider, useCanvasState } from './context/CanvasContext';
+import CanvasViewport from './components/canvas/CanvasViewport';
+import DraggableNote from './components/canvas/DraggableNote';
 import WriteNote from './components/WriteNote';
-import WallCanvas from './components/WallCanvas';
 import { fetchNotes, createNote } from './services/api';
 import './App.css';
 
@@ -11,7 +13,7 @@ import './App.css';
  * This is not an app. It's a personal space.
  * A corkboard. A journal. A paper surface.
  * 
- * Everything here should feel physical, human, imperfect.
+ * Now with infinite canvas for spatial organization!
  */
 function App() {
   const [notes, setNotes] = useState([]);
@@ -35,48 +37,149 @@ function App() {
   const handleAddNote = async (noteData) => {
     try {
       const newNote = await createNote(noteData);
-      // Add to beginning so newest notes appear first
       setNotes(prev => [newNote, ...prev]);
     } catch (error) {
       // Note creation failed - user can try again
     }
   };
 
+  // Generate spatial positions for notes on the canvas
+  const notesWithPositions = useMemo(() => {
+    const baseX = 5200;
+    const baseY = 5100;
+    const columns = 4;
+    const cellWidth = 320;
+    const cellHeight = 280;
+
+    return notes.map((note, index) => {
+      const col = index % columns;
+      const row = Math.floor(index / columns);
+
+      const seed = note.id ? parseInt(note.id.slice(-8), 16) : index;
+      const offsetX = (seed % 40) - 20;
+      const offsetY = ((seed >> 4) % 40) - 20;
+
+      return {
+        ...note,
+        position: {
+          x: baseX + (col * cellWidth) + offsetX,
+          y: baseY + (row * cellHeight) + offsetY,
+        },
+      };
+    });
+  }, [notes]);
+
   return (
-    <div className="app">
-      {/* Page header - personal, branded */}
-      <header className="app__header">
-        <h1 className="app__title">Ashish's Wall</h1>
-        <p className="app__subtitle">A personal space for thoughts and memories</p>
-        <Link to="/admin" className="app__admin-link">Admin</Link>
-      </header>
+    <CanvasProvider>
+      <CanvasInitializer notes={notesWithPositions} />
 
-      {/* Writing area - this IS a note */}
-      <WriteNote onSubmit={handleAddNote} />
-
-      {/* The wall of notes */}
-      <WallCanvas notes={notes} isLoading={isLoading} />
-
-      {/* Guide section - warm and personal */}
-      <footer className="app__footer">
-        <div className="app__guide">
-          <h2 className="app__guide-title">About This Wall</h2>
-          <p className="app__guide-text">
-            This is Ashish's personal collection of thoughts, ideas, and fleeting moments. 
-            Each note is a memory, a reflection, or a spark of inspiration pinned to this digital corkboard.
-          </p>
-          <p className="app__guide-text">
-            Feel free to browse, read, and absorb. These are fragments of a mind at work—
-            sometimes profound, sometimes playful, always honest.
-          </p>
-          <p className="app__guide-text">
-            Want to leave your own thought? Write it down above and pin it to the wall.
-          </p>
+      {/* HUD Layer - Fixed overlay with title and counter */}
+      <div className="app__hud">
+        <div className="app__hud-spacer" />
+        <div className="app__hud-header">
+          <h1 className="app__hud-title">Ashish's Wall</h1>
+          {!isLoading && notes.length > 0 && (
+            <div className="app__hud-counter">
+              <span className="app__hud-counter-number">{notes.length}</span>
+              <span className="app__hud-counter-label">
+                {notes.length === 1 ? 'memory' : 'memories'} collected
+              </span>
+            </div>
+          )}
         </div>
-        <div className="app__footer-credit">
-          <p>A personal space, lovingly maintained</p>
-        </div>
-      </footer>
+        <Link to="/admin" className="app__hud-admin">Admin</Link>
+      </div>
+
+      {/* Writing area - fixed overlay */}
+      <div className="app__write-overlay">
+        <WriteNote onSubmit={handleAddNote} />
+      </div>
+
+      {/* The infinite canvas */}
+      <CanvasViewport notes={notesWithPositions}>
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : notes.length === 0 ? (
+          <EmptyIndicator />
+        ) : (
+          notesWithPositions.map((note) => (
+            <DraggableNote
+              key={note.id}
+              note={note}
+              initialPosition={note.position}
+            />
+          ))
+        )}
+      </CanvasViewport>
+
+      {/* Help hint - fixed at bottom */}
+      <div className="app__canvas-hint">
+        <span>Drag background to pan • Drag grip to move notes</span>
+      </div>
+    </CanvasProvider>
+  );
+}
+
+/**
+ * CanvasInitializer - Auto-centers the viewport on notes when they load
+ */
+function CanvasInitializer({ notes }) {
+  const { setViewportPosition } = useCanvasState();
+  const [hasCentered, setHasCentered] = useState(false);
+
+  useEffect(() => {
+    if (!hasCentered && notes.length > 0) {
+      // Calculate centroid of all notes
+      const totalX = notes.reduce((sum, note) => sum + note.position.x, 0);
+      const totalY = notes.reduce((sum, note) => sum + note.position.y, 0);
+      const centerX = totalX / notes.length;
+      const centerY = totalY / notes.length;
+
+      // Center viewport on this point
+      // Target Viewport = (Screen / 2) - WorldCenter
+      // But since World is translated by Viewport:
+      // Screen = World + Viewport
+
+      // We want the centroid to be at the center of the screen
+      const screenCenterX = window.innerWidth / 2;
+      const screenCenterY = window.innerHeight / 2;
+
+      // Adjust for note size (centroid is based on top-left of notes)
+      // Approximate center of a note is +140, +100
+      const targetWorldX = centerX + 140;
+      const targetWorldY = centerY + 100;
+
+      setViewportPosition({
+        x: screenCenterX - targetWorldX,
+        y: screenCenterY - targetWorldY,
+      });
+
+      setHasCentered(true);
+    }
+  }, [notes, hasCentered, setViewportPosition]);
+
+  return null;
+}
+
+/**
+ * LoadingIndicator - Shows while notes are loading
+ */
+function LoadingIndicator() {
+  return (
+    <div className="app__loading" style={{ position: 'absolute', left: '5200px', top: '5100px' }}>
+      <p>Gathering memories...</p>
+    </div>
+  );
+}
+
+/**
+ * EmptyIndicator - Shows when no notes exist
+ */
+function EmptyIndicator() {
+  return (
+    <div className="app__empty" style={{ position: 'absolute', left: '5200px', top: '5100px' }}>
+      <p>The wall is quiet.</p>
+      <p className="app__empty-cta">Leave a thought above ↑</p>
     </div>
   );
 }

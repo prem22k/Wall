@@ -1,0 +1,68 @@
+/**
+ * DraggableNote Styles
+ * 
+ * Styling for the draggable note wrapper
+ * with grip handle and drag states.
+ */
+
+.draggable-note {
+    position: absolute;
+    /* Prevent the note from being selected during drag */
+    user-select: none;
+}
+
+/* Grip handle - appears on hover */
+.draggable-note__grip {
+    position: absolute;
+    top: 8px;
+    left: -28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 32px;
+    padding: 0;
+
+    background: rgba(139, 115, 85, 0.1);
+    border: 1px solid rgba(139, 115, 85, 0.2);
+    border-radius: 4px 0 0 4px;
+
+    color: rgba(139, 115, 85, 0.6);
+    cursor: grab;
+
+    opacity: 0;
+    transform: translateX(4px);
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+.draggable-note:hover .draggable-note__grip {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.draggable-note__grip:hover {
+    background: rgba(139, 115, 85, 0.2);
+    color: rgba(139, 115, 85, 0.9);
+}
+
+.draggable-note__grip:active {
+    cursor: grabbing;
+    background: rgba(139, 115, 85, 0.3);
+}
+
+/* Note is being dragged */
+.draggable-note[data-dragging="true"] {
+    z-index: 100;
+}
+
+.draggable-note[data-dragging="true"] .draggable-note__grip {
+    opacity: 1;
+    background: rgba(139, 115, 85, 0.3);
+    color: rgba(139, 115, 85, 1);
+}
